@@ -44,10 +44,21 @@ func locationToDict(_ location: CLLocation) -> [String: Any] {
       "accuracy": location.horizontalAccuracy,
       "altitudeAccuracy": location.verticalAccuracy,
       "heading": location.course,
-      "speed": location.speed
+      "speed": location.speed,
+      "mocked": location.isSimulated()
     ],
     "timestamp": location.timestamp.timeIntervalSince1970 * 1000 // ms
   ]
+}
+
+extension CLLocation {
+    func isSimulated() -> Bool {
+        if #available(iOS 15.0, *) {
+            return self.sourceInformation?.isSimulatedBySoftware ?? false
+        } else {
+            return false
+        }
+    }
 }
 
 func buildError(_ err: LocationError, _ message: String) -> [String: Any] {
